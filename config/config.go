@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -60,6 +61,11 @@ func Save(hackID string, configStruct interface{}) bool {
 	return true
 }
 
+func Load(hackID string, configStruct interface{}) {
+	file, _ := ioutil.ReadFile(GetMetaConfigFilePathForHack(hackID))
+	json.Unmarshal([]byte(file), configStruct)
+}
+
 func writeMetaConfigFile(hackID string, configStruct interface{}) bool {
 	var json, _ = json.MarshalIndent(configStruct, "", "  ")
 	writeFileError := ioutil.WriteFile(GetMetaConfigFilePathForHack(hackID), json, 0644)
@@ -79,18 +85,21 @@ func writeConfigFile(hackID string, configStruct interface{}) bool {
 		parsedTemplate, parseTemplateError := template.New("configTemplate").Parse(string(templateContent))
 
 		if parseTemplateError != nil {
+			fmt.Println(parseTemplateError)
 			return false
 		}
 
-		configFile, openFileError := os.OpenFile(GetConfigFilePathForHackAndTemplate(hackID, templateFile), os.O_RDWR|os.O_CREATE, 0644)
+		configFile, openFileError := os.OpenFile(GetConfigFilePathForHackAndTemplate(hackID, templateFile), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 
 		if openFileError != nil {
+			fmt.Println(openFileError)
 			return false
 		}
 
 		executeError := parsedTemplate.Execute(configFile, configStruct)
 
 		if executeError != nil {
+			fmt.Println(executeError)
 			return false
 		}
 

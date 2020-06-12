@@ -1,1 +1,4 @@
 web-config-server
+.vscode
+bin
+pkg
