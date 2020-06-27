@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"strings"
 	"text/template"
 )
@@ -39,6 +40,7 @@ func GetMetaServiceDirectoryPathForHack(hackID string) string {
 
 func EnableService(hackID string) {
 	os.OpenFile(GetMetaServiceDirectoryPathForHack(hackID)+"/.enable", os.O_RDONLY|os.O_CREATE, 0644)
+	exec.Command("/mnt/sdcard/manu_test/configure_services.sh", hackID).Run()
 }
 
 func DisableService(hackID string) {
