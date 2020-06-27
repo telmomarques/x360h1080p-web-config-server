@@ -106,6 +106,8 @@ func AddUser(user SSHUser) error {
 		return &customerror.Error{-2, 500, "Error adding user."}
 	}
 
+	service.Restart(service.Runit, serviceName)
+
 	return nil
 }
 
@@ -127,6 +129,7 @@ func DeleteUser(username string) bool {
 		return false
 	}
 
+	service.Restart(service.Runit, serviceName)
 	return true
 }
 
